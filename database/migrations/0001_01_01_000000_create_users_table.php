@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,12 +12,20 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            // Kita gunakan unsignedBigInteger agar bisa direlasikan nanti, 
+            // nullable dulu agar tidak error saat seeding awal jika role belum ada
+            $table->unsignedBigInteger('role_id')->default(3); // Default 3 = Member
+            $table->string('name'); // Full Name
             $table->string('email')->unique();
+            $table->string('phone_number')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();
+
+            // Relasi (Opsional: definisikan di table terpisah jika urutan migrasi error)
+            // $table->foreign('role_id')->references('id')->on('roles'); 
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
